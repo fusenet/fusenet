@@ -16,7 +16,10 @@ using System.Threading;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.Core;
+using Fusenet.Utils;
+
+namespace Fusenet.NNTP
 {
     static class NZB
     {
@@ -27,7 +30,7 @@ namespace Phuse
 
             try
             {
-                XmlReader xR = XmlReader.Create(xXML, Module.ReaderSettings);
+                XmlReader xR = XmlReader.Create(xXML, Common.ReaderSettings);
 
                 while (xR.ReadToFollowing("file"))
                 {

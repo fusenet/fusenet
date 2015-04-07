@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections.Concurrent;
-using System.Threading;
 using System.Xml;
+using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 //-------------------------------------------------------------
 //
@@ -18,7 +18,12 @@ using System.Diagnostics;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.API;
+using Fusenet.Core;
+using Fusenet.NNTP;
+using Fusenet.Utils;
+
+namespace Fusenet.Core
 {
     internal class Slots : VirtualItem 
     {
@@ -34,8 +39,8 @@ namespace Phuse
         }
 
         public int Count { get { return zCol.Count; } }
-        internal string XML { get { return Module.XmlToString(this); } }
-        public NNTPInfo Info { get { return Module.CountInfo(VirtualList); } }
+        internal string XML { get { return Common.XmlToString(this); } }
+        public NNTPInfo Info { get { return Common.CountInfo(VirtualList); } }
         internal bool ContainsKey(int SlotID) { return zCol.ContainsKey(SlotID); }
         internal List<int> ListID(int SlotID = -1) { return zCol.KeyList(SlotID); }
         internal VirtualSlot Item(int SlotID) { return (VirtualSlot)zCol.Item(SlotID); }
@@ -243,7 +248,7 @@ namespace Phuse
         public int Count { get { return zCol.Count; } }
         public long TotalTime { get { return zStats.TotalTime; } }
         public ManualResetEventSlim WaitHandle { get { return zWait; } }
-        public NNTPInfo Info { get { return Module.CountInfo(VirtualList); } }
+        public NNTPInfo Info { get { return Common.CountInfo(VirtualList); } }
         public bool WriteXML(XmlWriter xR) { return (ApiXML.Slot(xR, this)); }
         internal void Progress(long AddedBytes) { zStats.Progress(AddedBytes); }
         internal List<int> ListID(int FileID = -1) { return zCol.KeyList(FileID); }
@@ -428,7 +433,7 @@ namespace Phuse
         internal NNTPOutput Output { get { return zOutput; } } 
         internal bool IsCompleted { get { return zCol.IsCompleted; } }
         public List<VirtualItem> VirtualList { get { return null; } }
-        internal string Log { get { return Module.ReadLog(ErrorLog, 50); } }
+        internal string Log { get { return Common.ReadLog(ErrorLog, 50); } }
         public int Count { get { return (int)Interlocked.Read(ref zTotal); } }
         internal void Progress(long AddedBytes) { zStats.Progress(AddedBytes); }
         internal bool Remove(int CommandID = -1) { return zCol.Remove(CommandID); }
@@ -474,7 +479,7 @@ namespace Phuse
             if (cList == null) { return false; }
             if (cList.Count == 0) { return false; }
 
-            Module.Safe32(ref zTotal, cList.Count);
+            Common.Safe32(ref zTotal, cList.Count);
 
             cList.Sort();
 
@@ -495,7 +500,7 @@ namespace Phuse
 
             }
 
-            Module.Safe32(ref zExpected, cSize);
+            Common.Safe32(ref zExpected, cSize);
             zCol = new IndexedCollection(cOut);
             return true;
         }
@@ -510,7 +515,7 @@ namespace Phuse
             //Debug.WriteLine(Module.MakeMsg(Convert.ToString(zErr.Code), "Command #" + Convert.ToString(CommandID) + " - Error " + Module.MakeErr(zErr)));
 
             Errors.Enqueue(zErr.Message.Replace(Environment.NewLine, ""));
-            ErrorLog.Enqueue(Module.MakeMsg(Convert.ToString(zErr.Code), "Command #" + Convert.ToString(CommandID) + " - Error " + Module.MakeErr(zErr)));
+            ErrorLog.Enqueue(Common.MakeMsg(Convert.ToString(zErr.Code), "Command #" + Convert.ToString(CommandID) + " - Error " + Common.MakeErr(zErr)));
         }
     }
 } // <Y5v6dd7WHTQ>

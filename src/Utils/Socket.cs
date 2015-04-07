@@ -3,8 +3,8 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 //-------------------------------------------------------------
 //
@@ -17,7 +17,10 @@ using System.Net.Security;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.API;
+using Fusenet.Core;
+
+namespace Fusenet.Utils
 {
     internal interface VirtualSocket
     {
@@ -114,7 +117,7 @@ namespace Phuse
 
                 if (e.SocketError != SocketError.Success)
                 {
-                    NNTPError zErr = Module.TranslateError(e.SocketError);
+                    NNTPError zErr = Common.TranslateError(e.SocketError);
                     Close(zErr.Code, zErr.Message);
                     return;
                 }
@@ -194,7 +197,7 @@ namespace Phuse
 			{
 				if (e.SocketError != SocketError.Success)
 				{
-                    NNTPError zErr = Module.TranslateError(e.SocketError);
+                    NNTPError zErr = Common.TranslateError(e.SocketError);
 					Close(zErr.Code, zErr.Message);
 					return;
 				}
@@ -253,7 +256,7 @@ namespace Phuse
                 iSend = new System.Net.Sockets.SocketAsyncEventArgs();
                 iSend.Completed += new EventHandler<SocketAsyncEventArgs>(iSend_Completed);
 
-                byte[] bD = Module.GetBytes(bData);
+                byte[] bD = Common.GetBytes(bData);
 				iSend.SetBuffer(bD, 0, bD.Length);
 
 				if (!ClientSocket.SendAsync(iSend)) { iSend_Completed(null, iSend); }
@@ -283,7 +286,7 @@ namespace Phuse
 			{
 				if (e.SocketError != SocketError.Success)
 				{
-                    NNTPError zErr = Module.TranslateError(e.SocketError);
+                    NNTPError zErr = Common.TranslateError(e.SocketError);
 					Close(zErr.Code, zErr.Message);
 					return;
 				}
@@ -412,7 +415,7 @@ namespace Phuse
                 SafeFire(Connected, new WorkArgs(951, "Connected"));
 
             }
-            catch (Exception ex) { Close(955, "Server doesn't support SSL."); }
+            catch { Close(955, "Server doesn't support SSL."); }
         }
 
         public bool Receive()
@@ -518,7 +521,7 @@ namespace Phuse
         {
             try
             {
-                byte[] bD = Module.GetBytes(bData);
+                byte[] bD = Common.GetBytes(bData);
                 SocketStream.Write(bD, 0, bD.Length);
 
                 return true;

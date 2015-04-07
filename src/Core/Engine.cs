@@ -19,6 +19,9 @@ using System.Collections.Specialized;
 //
 //-------------------------------------------------------------
 
+using Fusenet.API;
+using Fusenet.Utils;
+
 namespace Phuse
 {
     public class Engine

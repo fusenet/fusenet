@@ -21,7 +21,10 @@ using System.Diagnostics;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.Core;
+using Fusenet.Utils;
+
+namespace Fusenet.NNTP
 {
     internal class VirtualNNTP
     {
@@ -113,9 +116,9 @@ namespace Phuse
                 {
                     if (e.Data.Length >= lBOFLength)
                     {
-                        sBOF = Module.GetBOF(e.Data, lBOFLength);
+                        sBOF = Common.GetBOF(e.Data, lBOFLength);
 
-                        StatusCode = Module.GetCode(sBOF);
+                        StatusCode = Common.GetCode(sBOF);
 
                         switch (StatusCode)
                         {
@@ -141,7 +144,7 @@ namespace Phuse
 
                 if (lPos >= 0)
                 {
-                    sEOF = Module.GetEOF(e.Data, lEOFLength);
+                    sEOF = Common.GetEOF(e.Data, lEOFLength);
 
                     switch (SocketStatus)
                     {
@@ -152,7 +155,7 @@ namespace Phuse
 
                         default:
 
-                            bFinished = (Module.VbRight(sEOF, 2) == Environment.NewLine);
+                            bFinished = (Common.VbRight(sEOF, 2) == Environment.NewLine);
                             break;
                     }
                 }
@@ -180,7 +183,7 @@ namespace Phuse
 
             if (SocketStatus != NNTPStatus.Multiline)
             {
-                sHeader = Module.GetReader(bData).ReadLine();
+                sHeader = Common.GetReader(bData).ReadLine();
             }
 
             //iServer.WriteDebug(Module.VbLeft((Convert.ToString(NNTPCode) + "000"), 3), sHeader);
@@ -304,7 +307,7 @@ namespace Phuse
                     return false;
                 }
 
-                if (!iSocket.Send(Module.GetStream(sCommand), ExpectedBytesReturned))
+                if (!iSocket.Send(Common.GetStream(sCommand), ExpectedBytesReturned))
                 {
                     return false;
                 }
@@ -354,11 +357,11 @@ namespace Phuse
                 {
                     if (!iServer.SSL)
                     {
-                        iSocket = new Socket();
+                        iSocket = new Utils.Socket();
                     }
                     else
                     {
-                        iSocket = new SSLSocket();
+                        iSocket = new Utils.SSLSocket();
                     }
 
                     iSocket.Received += new EventHandler<WorkArgs>(iReceived);
@@ -570,14 +573,14 @@ namespace Phuse
 
     } // <lcvVhLTkdnY>
 
-    internal class NNTP : VirtualNNTP
+    internal class cNNTP : VirtualNNTP
     {
         private string LastGroup;
         private NNTPCommands cCommand;
         private VirtualServer vServer;
         private ManualResetEventSlim VirtualEvent = new ManualResetEventSlim();
 
-        internal NNTP(VirtualServer SVR, VirtualConnection VC) : base(SVR, VC)
+        internal cNNTP(VirtualServer SVR, VirtualConnection VC) : base(SVR, VC)
         {
             vServer = SVR;
 
@@ -611,7 +614,7 @@ namespace Phuse
             {
                 if ((!base.IsConnected) || (base.SocketStatus == NNTPStatus.Closed) || (base.SocketStatus == NNTPStatus.Connecting))
                 {
-                    base.Disconnect((int)NNTPCodes.SocketTimedOut, Module.TranslateError(SocketError.TimedOut).Message, false);
+                    base.Disconnect((int)NNTPCodes.SocketTimedOut, Common.TranslateError(SocketError.TimedOut).Message, false);
                 }
 
                 VirtualEvent.Wait(-1, cCancel);
@@ -707,7 +710,7 @@ namespace Phuse
 
                 if (cCommand.Finished)
                 {
-                    Done(Module.GetStream(sLine));
+                    Done(Common.GetStream(sLine));
                     return;
                 }
                 else

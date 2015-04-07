@@ -17,14 +17,14 @@ using System.Runtime.InteropServices;
 //-------------------------------------------------------------
 
 [assembly: AssemblyTitle("Fusenet")]
-[assembly: AssemblyDescription("Phuse NNTP Library")]
-[assembly: AssemblyCompany("Fusenet")]
-[assembly: AssemblyProduct("Phuse")]
+[assembly: AssemblyDescription("Fusenet NNTP Library")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Fusenet")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: ComVisible(false)]
-[assembly: Guid("b6d4fe71-6fb7-4548-380e-6e13f13edfe7")]
+[assembly: Guid("c6d4fe71-6fb7-4548-380e-6e13f13edfe7")]
 
 [assembly: AssemblyVersion("0.9.2.0")]
 [assembly: AssemblyFileVersion("0.9.2.0")]

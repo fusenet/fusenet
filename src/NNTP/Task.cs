@@ -20,7 +20,10 @@ using System.Security.Cryptography;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.Core;
+using Fusenet.Utils;
+
+namespace Fusenet.NNTP
 {
     internal class ConnectionTask
     {
@@ -105,7 +108,7 @@ namespace Phuse
             wList.Add(vConnection.Idle.WaitHandle);
             wList.Add(vConnection.Token.Token.WaitHandle);
 
-            WaitHandle wHandle = Module.WaitList(wList, lMilliseconds);
+            WaitHandle wHandle = Common.WaitList(wList, lMilliseconds);
 
             if ((wHandle != null) && (wHandle.Handle == vConnection.Idle.WaitHandle.Handle))
             { 
@@ -186,7 +189,7 @@ namespace Phuse
                                 }
                                 else
                                 {
-                                    cList.Add(Module.MostFrequent(vFile.Errors.GetEnumerator()));
+                                    cList.Add(Common.MostFrequent(vFile.Errors.GetEnumerator()));
                                 }
                             }
 
@@ -196,7 +199,7 @@ namespace Phuse
                             }
                             else
                             {
-                                vSlot.StatusLine = Module.MostFrequent(cList.GetEnumerator());
+                                vSlot.StatusLine = Common.MostFrequent(cList.GetEnumerator());
                                 if (vSlot.StatusLine.Length == 0) { vSlot.StatusLine = "No data"; }
                                 vSlot.Status = SlotStatus.Failed;
                             }
@@ -219,7 +222,7 @@ namespace Phuse
             string zLine = null;
 
             ArticleDecoder decoder = null;
-            StreamReader sr = Module.GetReader((MemoryStream)zCommand.Data);
+            StreamReader sr = Common.GetReader((MemoryStream)zCommand.Data);
 
             while (!sr.EndOfStream)
             {

@@ -16,7 +16,7 @@ using System.Collections.Concurrent;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+namespace Fusenet.Utils
 {
     internal class IndexedCollection : IndexedObject 
     {
@@ -115,7 +115,7 @@ namespace Phuse
 
         internal List<int> KeyList(int KeyID = -1)
         {
-            if (KeyID == -1) { return Module.EnumInt(zCol.Keys.GetEnumerator()); }
+            if (KeyID == -1) { return Common.EnumInt(zCol.Keys.GetEnumerator()); }
             List<int> sList = new List<int>();
             if (zCol.ContainsKey(KeyID)) { sList.Add(KeyID); }
             return sList;
@@ -139,7 +139,7 @@ namespace Phuse
 
             if (ObjectID == -1)
             {
-                foreach (IndexedObject cItem in Module.EnumObj(zCol.Values.GetEnumerator()))
+                foreach (IndexedObject cItem in Common.EnumObj(zCol.Values.GetEnumerator()))
                 {
                     sList.Add(cItem);
                 }
@@ -157,7 +157,7 @@ namespace Phuse
             get
             {
                 if (zCol.IsEmpty) { return -1; }
-                List<IndexedObject> oList = Module.EnumObj(zCol.Values.GetEnumerator());
+                List<IndexedObject> oList = Common.EnumObj(zCol.Values.GetEnumerator());
                 if (oList.Count == 0) { return -1; }
 
                 oList.Sort();

@@ -23,7 +23,10 @@ using System.Collections.Concurrent;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.Core;
+using Fusenet.NNTP;
+
+namespace Fusenet.Utils
 {
     internal enum ArticleEncoding : int
 	{
@@ -283,37 +286,37 @@ namespace Phuse
 
         internal long TotalTime
         {
-            set { Module.Safe32(ref zTotalTime, value); }
+            set { Common.Safe32(ref zTotalTime, value); }
             get { return Interlocked.Read(ref zTotalTime); }
         }
 
         internal long TotalBytes
         {
-            set { Module.Safe32(ref zTotalBytes, value); }
+            set { Common.Safe32(ref zTotalBytes, value); }
             get { return Interlocked.Read(ref zTotalBytes); }
         }
 
         internal long FakeBytes
         {
-            set { Module.Safe32(ref zFakeBytes, value); }
+            set { Common.Safe32(ref zFakeBytes, value); }
             get { return Interlocked.Read(ref zFakeBytes); }
         }
 
         internal long LastTime
         {
-            set { Module.Safe32(ref zLastTime, value); }
+            set { Common.Safe32(ref zLastTime, value); }
             get { return Interlocked.Read(ref zLastTime); }
         }
 
         private long LastReset
         {
-            set { Module.Safe32(ref zLastReset, value); }
+            set { Common.Safe32(ref zLastReset, value); }
             get { return Interlocked.Read(ref zLastReset); }
         }
 
         internal long LastBytes
         {
-            set { Module.Safe32(ref zLastBytes, value); }
+            set { Common.Safe32(ref zLastBytes, value); }
             get { return Interlocked.Read(ref zLastBytes); }
         }
 
@@ -329,23 +332,23 @@ namespace Phuse
 
         internal void Progress(long AddedBytes)
         {
-            Module.Add32(ref zFakeBytes, AddedBytes);
+            Common.Add32(ref zFakeBytes, AddedBytes);
         }
 
         internal void Statistics(long AddedBytes, long AddedTime)
         {
             ValidateCache();
 
-            Module.Add32(ref zLastTime, AddedTime);
-            Module.Add32(ref zTotalTime, AddedTime);
+            Common.Add32(ref zLastTime, AddedTime);
+            Common.Add32(ref zTotalTime, AddedTime);
 
-            Module.Add32(ref zLastBytes, AddedBytes);
-            Module.Add32(ref zTotalBytes, AddedBytes);
+            Common.Add32(ref zLastBytes, AddedBytes);
+            Common.Add32(ref zTotalBytes, AddedBytes);
         }
 
     } // <weSceqYmadY>
 
-    internal static class Module
+    internal static class Common
 	{
         private static Random cRandom = new Random();
         private static Encoding cEnc = Encoding.GetEncoding("iso-8859-1");       
@@ -665,7 +668,7 @@ namespace Phuse
         { 
             Dictionary<string, int> cCount = new Dictionary<string, int>();
 
-            foreach (string line in Module.EnumStr(inp))
+            foreach (string line in Common.EnumStr(inp))
             {
                 if (cCount.ContainsKey(line))
                 {
@@ -693,13 +696,13 @@ namespace Phuse
 
             for (int i = 0; i < lLength; i++) 
             {
-                if (Module.Random.Next(0, 2) == 1)
+                if (Common.Random.Next(0, 2) == 1)
                 {
-                    sB.Append((char)(Module.Random.Next(65, 90)));
+                    sB.Append((char)(Common.Random.Next(65, 90)));
                 }
                 else
                 {
-                    sB.Append((char)(Module.Random.Next(97, 122)));
+                    sB.Append((char)(Common.Random.Next(97, 122)));
                 }
             }
 
@@ -772,7 +775,7 @@ namespace Phuse
 
         internal static XmlWriter CreateWriter(StringBuilder sX)
         {
-            XmlWriter xR = XmlWriter.Create(sX, Module.WriterSettings);
+            XmlWriter xR = XmlWriter.Create(sX, Common.WriterSettings);
             xR.WriteProcessingInstruction("xml", "version='1.0' encoding='ISO-8859-1'");
             return xR;
         }

@@ -21,7 +21,11 @@ using System.Collections.Specialized;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.Core;
+using Fusenet.NNTP;
+using Fusenet.Utils;
+
+namespace Fusenet.API
 {
     public interface Api
     {
@@ -173,7 +177,7 @@ namespace Phuse
             vSlot.Status = SlotStatus.Downloading;
             Notify();
 
-            WaitHandle wRet = Module.WaitList(wList);
+            WaitHandle wRet = Common.WaitList(wList);
 
             if ((wRet == null) || (wRet.Handle == vToken.Token.WaitHandle.Handle))
             {
@@ -192,7 +196,7 @@ namespace Phuse
                 }
                 else
                 {
-                    zOut = Module.TranslateStatus((int)vSlot.Status);
+                    zOut = Common.TranslateStatus((int)vSlot.Status);
                 }
 
                 int vId = vSlot.ID;
@@ -216,7 +220,7 @@ namespace Phuse
                     if (vFile.Output.Data.Length == 0) { continue; }
 
                     vFile.Output.Data.Position = 0;
-                    zOut = Module.GetString(vFile.Output.Data);
+                    zOut = Common.GetString(vFile.Output.Data);
                 }
 
                 int vId = vSlot.ID;
@@ -270,7 +274,7 @@ namespace Phuse
 
     //internal class WebHandler : Phocus.Webhandler
     //{
-    //    private Phuse.Engine Engine;
+    //    private Engine Engine;
 
     //    internal WebHandler(Engine zEngine)
     //    {
@@ -442,13 +446,13 @@ namespace Phuse
         {
             xR.WriteStartElement("slot");
             xR.WriteElementString("nzo_id", Convert.ToString(vSlot.ID));
-            xR.WriteElementString("name", Module.CleanString(vSlot.Name));
-            xR.WriteElementString("filename", Module.CleanString(vSlot.Name));
-            xR.WriteElementString("status", Module.TranslateStatus((int)vSlot.Status));
+            xR.WriteElementString("name", Common.CleanString(vSlot.Name));
+            xR.WriteElementString("filename", Common.CleanString(vSlot.Name));
+            xR.WriteElementString("status", Common.TranslateStatus((int)vSlot.Status));
 
             if (vSlot.Status == SlotStatus.Failed)
             {
-                xR.WriteElementString("fail_message", Module.CleanString(vSlot.StatusLine));
+                xR.WriteElementString("fail_message", Common.CleanString(vSlot.StatusLine));
             }
 
             if (!(vSlot.History))
@@ -457,21 +461,21 @@ namespace Phuse
                 int lSeconds = vInfo.SecondsLeft(vSlot.SpeedAverage, vSlot.TotalTime);
 
                 string sLeft = "00:00:00";
-                string ETA = Module.FormatDate(DateTime.UtcNow);
+                string ETA = Common.FormatDate(DateTime.UtcNow);
 
                 if (lSeconds > 0)
                 {
-                    sLeft = Module.FormatElapsed(new TimeSpan(0, 0, lSeconds));
-                    ETA = Module.FormatDate(DateTime.UtcNow.AddSeconds(lSeconds));
+                    sLeft = Common.FormatElapsed(new TimeSpan(0, 0, lSeconds));
+                    ETA = Common.FormatDate(DateTime.UtcNow.AddSeconds(lSeconds));
                 }
 
                 xR.WriteElementString("index", Convert.ToString(vSlot.Index));
                 xR.WriteElementString("percentage", Convert.ToString(Math.Round(vInfo.Percentage, 0)));
                 xR.WriteElementString("bytes", Convert.ToString(vInfo.Expected));
                 xR.WriteElementString("kbpersec", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", vSlot.Speed / (decimal)1000));
-                xR.WriteElementString("mb", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Module.BytesToMegabytes(vInfo.Expected)));
-                xR.WriteElementString("mbleft", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Module.BytesToMegabytes(vInfo.BytesLeft)));
-                xR.WriteElementString("size", String.Format(CultureInfo.InvariantCulture, "{0:0.0}", Module.BytesToMegabytes(vInfo.Expected)) + " MB");
+                xR.WriteElementString("mb", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Common.BytesToMegabytes(vInfo.Expected)));
+                xR.WriteElementString("mbleft", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Common.BytesToMegabytes(vInfo.BytesLeft)));
+                xR.WriteElementString("size", String.Format(CultureInfo.InvariantCulture, "{0:0.0}", Common.BytesToMegabytes(vInfo.Expected)) + " MB");
                 xR.WriteElementString("eta", ETA);
                 xR.WriteElementString("timeleft", sLeft);
                 xR.WriteElementString("priority", "Normal");
@@ -517,25 +521,25 @@ namespace Phuse
             NNTPInfo vInfo = vSlots.Info;
 
             string sLeft = "00:00:00";
-            string ETA = Module.FormatDate(DateTime.UtcNow);
+            string ETA = Common.FormatDate(DateTime.UtcNow);
             int lSeconds = vInfo.SecondsLeft(vSlots.SpeedAverage, vSlots.TotalTime);
 
             if (lSeconds > 0)
             {
                 sLeft = new TimeSpan(0, 0, 0, lSeconds, 0).ToString("c");
-                ETA = Module.FormatDate(DateTime.UtcNow.AddSeconds(lSeconds));
+                ETA = Common.FormatDate(DateTime.UtcNow.AddSeconds(lSeconds));
             }
 
             xR.WriteElementString("status", vSlots.Status);
-            xR.WriteElementString("paused", Module.BoolToString(vSlots.Paused));
-            xR.WriteElementString("mb", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Module.BytesToMegabytes(Math.Abs(vInfo.Expected))));
-            xR.WriteElementString("mbleft", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Module.BytesToMegabytes(Math.Abs(vInfo.BytesLeft))));
+            xR.WriteElementString("paused", Common.BoolToString(vSlots.Paused));
+            xR.WriteElementString("mb", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Common.BytesToMegabytes(Math.Abs(vInfo.Expected))));
+            xR.WriteElementString("mbleft", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", Common.BytesToMegabytes(Math.Abs(vInfo.BytesLeft))));
             xR.WriteElementString("kbpersec", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", vSlots.Speed / (decimal)1000));
 
             xR.WriteElementString("eta", ETA);
             xR.WriteElementString("timeleft", sLeft);
 
-            xR.WriteElementString("uptime", Module.FormatElapsed(vSlots.Uptime));
+            xR.WriteElementString("uptime", Common.FormatElapsed(vSlots.Uptime));
             xR.WriteElementString("start", "0");
             xR.WriteElementString("limit", "0");
             xR.WriteElementString("speedlimit", "0");
@@ -545,8 +549,8 @@ namespace Phuse
 
             if (vSlots.Log.Count > 0) 
             {
-                string sWarning = Module.ReadLog(vSlots.Log, 1).Replace(Environment.NewLine, "");
-                xR.WriteElementString("last_warning", Module.CleanString(sWarning)); 
+                string sWarning = Common.ReadLog(vSlots.Log, 1).Replace(Environment.NewLine, "");
+                xR.WriteElementString("last_warning", Common.CleanString(sWarning)); 
             }
            
             // TODO Server.Log
@@ -567,9 +571,9 @@ namespace Phuse
             xR.WriteElementString("nzo_id", Convert.ToString((vServer.ID)));
             xR.WriteElementString("host", vServer.Host);
             xR.WriteElementString("port", Convert.ToString(vServer.Port));
-            xR.WriteElementString("ssl", Module.BoolToString(vServer.SSL));
-            xR.WriteElementString("username", Module.CleanString(vServer.Username));
-            xR.WriteElementString("password", Module.Repeat("*", vServer.Password.Length));
+            xR.WriteElementString("ssl", Common.BoolToString(vServer.SSL));
+            xR.WriteElementString("username", Common.CleanString(vServer.Username));
+            xR.WriteElementString("password", Common.Repeat("*", vServer.Password.Length));
             xR.WriteElementString("priority", TranslatePriority(vServer.Priority));
             xR.WriteElementString("connections", Convert.ToString(vServer.Connections.Count(vServer.ID)));
             xR.WriteEndElement();

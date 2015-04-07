@@ -17,7 +17,10 @@ using System.Threading.Tasks;
 //
 //-------------------------------------------------------------
 
-namespace Phuse
+using Fusenet.NNTP;
+using Fusenet.Utils;
+
+namespace Fusenet.Core
 {
     internal class Connections
     {
@@ -142,12 +145,12 @@ namespace Phuse
 
     } // <7P-BHcV0_SQ>
 
-    internal class VirtualConnection : IndexedObject 
+    internal class VirtualConnection : Utils.IndexedObject 
     {
         private int zID;
         private int zIndex;
 
-        private NNTP zNNTP;
+        private cNNTP zNNTP;
         private Scheduler zSched;
         private VirtualServer Srv;
         private ConnectionTask zConnection;
@@ -159,7 +162,7 @@ namespace Phuse
         {
             Srv = cServer;
             zSched = Scheduler;
-            zNNTP = new NNTP(cServer, this);
+            zNNTP = new cNNTP(cServer, this);
 
             zConnection = new ConnectionTask();
             vIdle = new ManualResetEventSlim();
@@ -200,7 +203,7 @@ namespace Phuse
 
             if (zNNTP != null)
             {
-                NNTP KeepRef = zNNTP;
+                cNNTP KeepRef = zNNTP;
                 zNNTP = null;
                 KeepRef.Disconnect(998, "Cancelled", true);
                 KeepRef = null;
@@ -245,7 +248,7 @@ namespace Phuse
 
         internal void LogError(int CommandID, NNTPError zErr)
         {
-            Srv.WriteStatus("Command #" + Convert.ToString(CommandID) + " - Error " + Module.MakeErr(zErr));
+            Srv.WriteStatus("Command #" + Convert.ToString(CommandID) + " - Error " + Common.MakeErr(zErr));
         }
 
     }

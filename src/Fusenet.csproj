@@ -15,9 +15,8 @@
     <AssemblyName>Fusenet</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -55,19 +54,23 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="API.cs" />
-    <Compile Include="Collection.cs" />
-    <Compile Include="Decoder.cs" />
-    <Compile Include="Module.cs" />
-    <Compile Include="Connections.cs" />
-    <Compile Include="Engine.cs" />
-    <Compile Include="NNTP.cs" />
-    <Compile Include="NZB.cs" />
-    <Compile Include="Slots.cs" />
-    <Compile Include="Socket.cs" />
-    <Compile Include="Scheduler.cs" />
-    <Compile Include="Task.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="API\API.cs" />
+    <Compile Include="Utils\Collection.cs" />
+    <Compile Include="NNTP\Decoder.cs" />
+    <Compile Include="Utils\Module.cs" />
+    <Compile Include="Core\Connections.cs" />
+    <Compile Include="Core\Engine.cs" />
+    <Compile Include="NNTP\NNTP.cs" />
+    <Compile Include="NNTP\NZB.cs" />
+    <Compile Include="Core\Slots.cs" />
+    <Compile Include="Utils\Socket.cs" />
+    <Compile Include="Core\Scheduler.cs" />
+    <Compile Include="NNTP\Task.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
