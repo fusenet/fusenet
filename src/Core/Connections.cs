@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using Fusenet;
+
 
 //-------------------------------------------------------------
 //
@@ -142,7 +144,7 @@ namespace Fusenet
 
     } // <7P-BHcV0_SQ>
 
-    internal class VirtualConnection : Utils.IndexedObject 
+    internal class VirtualConnection : Fusenet.IndexedObject 
     {
         private int zID;
         private int zIndex;
